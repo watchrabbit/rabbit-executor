@@ -5,7 +5,7 @@
 Watchrabbit - Executor
 ======================
 
-Executor is a latency and fault tolerance library. Designed to manage and isolate access points of remote systems, services and libraries can stop cascading failure and increase performance. [google](www.google.com)
+Executor is a latency and fault tolerance library. Designed to manage and isolate access points of remote systems, services and libraries can stop cascading failure and increase performance. Executor implements [Circuit Breaker](http://martinfowler.com/bliki/CircuitBreaker.html) pattern with sevral useful improvements. 
 
 Executions
 ----------
