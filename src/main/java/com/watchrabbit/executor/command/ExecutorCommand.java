@@ -17,6 +17,7 @@ package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.callback.CheckedConsumer;
 import com.watchrabbit.commons.exception.SystemException;
+import com.watchrabbit.commons.marker.Todo;
 import com.watchrabbit.executor.exception.CommandNameGeneratorException;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
@@ -56,6 +57,7 @@ public class ExecutorCommand<V> {
         return this;
     }
 
+    @Todo("Prepare fail silent mode")
     public void invoke(CheckedRunnable runnable) throws ExecutionException {
         invoke(()
                 -> {
@@ -74,6 +76,14 @@ public class ExecutorCommand<V> {
         }
     }
 
+    public void queue(CheckedRunnable runnable) {
+        queue(()
+                -> {
+                    runnable.run();
+                    return null;
+                });
+    }
+
     public Future<V> queue(Callable<V> callable) {
         init();
         return service.executeAsynchronously(callable, config);
@@ -89,6 +99,7 @@ public class ExecutorCommand<V> {
         service.executeAsynchronously(wrap(callable, onSuccess, onFailure), config);
     }
 
+    @Todo("Extract this method")
     private synchronized void init() {
         if (StringUtils.isBlank(config.getCommandName())) {
             try {
