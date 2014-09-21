@@ -23,5 +23,7 @@ import java.util.concurrent.ExecutorService;
  */
 public interface ThreadPoolManager {
 
+    ExecutorService getPool();
+
     ExecutorService getPool(String poolName);
 }

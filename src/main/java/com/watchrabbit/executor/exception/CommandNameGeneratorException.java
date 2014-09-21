@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.watchrabbit.executor.pool;
-
-import com.watchrabbit.commons.marker.Todo;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+package com.watchrabbit.executor.exception;
 
 /**
  *
  * @author Mariusz
  */
-public class ThreadPoolManagerImpl implements ThreadPoolManager {
+public class CommandNameGeneratorException extends RuntimeException {
 
-    private static final ExecutorService pool = Executors.newCachedThreadPool();
-
-    @Todo
-    @Override
-    public ExecutorService getPool() {
-        return pool;
+    public CommandNameGeneratorException(String message) {
+        super(message);
     }
 
-    @Todo
-    @Override
-    public ExecutorService getPool(String poolName) {
-        return pool;
+    public CommandNameGeneratorException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

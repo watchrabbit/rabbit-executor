@@ -13,30 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.watchrabbit.executor.pool;
-
-import com.watchrabbit.commons.marker.Todo;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+package com.watchrabbit.executor.wrapper;
 
 /**
  *
  * @author Mariusz
  */
-public class ThreadPoolManagerImpl implements ThreadPoolManager {
+public class CircutBreaker {
 
-    private static final ExecutorService pool = Executors.newCachedThreadPool();
+    private String commandName;
 
-    @Todo
-    @Override
-    public ExecutorService getPool() {
-        return pool;
+    private boolean closed = true;
+
+    public CircutBreaker(String commandName) {
+        this.commandName = commandName;
     }
 
-    @Todo
-    @Override
-    public ExecutorService getPool(String poolName) {
-        return pool;
+    public String getCommandName() {
+        return commandName;
+    }
+
+    public void setCommandName(String commandName) {
+        this.commandName = commandName;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
 }

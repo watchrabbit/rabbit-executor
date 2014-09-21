@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.watchrabbit.executor.pool;
+package com.watchrabbit.executor.service;
 
-import com.watchrabbit.commons.marker.Todo;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.watchrabbit.executor.wrapper.CommandConfigWrapper;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  *
  * @author Mariusz
  */
-public class ThreadPoolManagerImpl implements ThreadPoolManager {
+public interface CommandService {
 
-    private static final ExecutorService pool = Executors.newCachedThreadPool();
+    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfigWrapper commandWrapper);
 
-    @Todo
-    @Override
-    public ExecutorService getPool() {
-        return pool;
-    }
-
-    @Todo
-    @Override
-    public ExecutorService getPool(String poolName) {
-        return pool;
-    }
+    public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfigWrapper commandWrapper);
 
 }
