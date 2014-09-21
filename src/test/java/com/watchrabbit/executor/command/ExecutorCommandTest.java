@@ -17,6 +17,7 @@ package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.exception.SystemException;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
+import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,9 +45,13 @@ public class ExecutorCommandTest {
         CountDownLatch latch = new CountDownLatch(1);
         try {
             executor()
-                    .invoke(()
-                            -> {
-                        throw new SystemException();
+                    .invoke(new CheckedRunnable() {
+
+                        @Override
+                        public void run() throws Exception {
+                            throw new SystemException();
+                        }
+
                     });
         } catch (ExecutionException ex) {
         }
