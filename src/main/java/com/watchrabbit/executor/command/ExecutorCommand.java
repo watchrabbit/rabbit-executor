@@ -20,6 +20,7 @@ import com.watchrabbit.commons.exception.SystemException;
 import com.watchrabbit.executor.exception.CommandNameGeneratorException;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
+import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import com.watchrabbit.executor.wrapper.CommandConfigWrapper;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -55,6 +56,14 @@ public class ExecutorCommand<V> {
         return this;
     }
 
+    public void invoke(CheckedRunnable runnable) throws ExecutionException {
+        invoke(()
+                -> {
+                    runnable.run();
+                    return null;
+                });
+    }
+
     public V invoke(Callable<V> callable) throws ExecutionException {
         init();
         try {
@@ -84,12 +93,12 @@ public class ExecutorCommand<V> {
         if (StringUtils.isBlank(config.getCommandName())) {
             try {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                if (stackTrace.length < 3) {
+                if (stackTrace.length < 4) {
                     throw new CommandNameGeneratorException("Cannot auto generate command name");
                 }
-                String generatedName = new StringBuilder(stackTrace[2].getClassName())
+                String generatedName = new StringBuilder(stackTrace[3].getClassName())
                         .append(":")
-                        .append(stackTrace[2].getMethodName())
+                        .append(stackTrace[3].getMethodName())
                         .toString();
                 config.setCommandName(generatedName);
             } catch (SecurityException ex) {

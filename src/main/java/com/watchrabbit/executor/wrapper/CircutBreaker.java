@@ -15,15 +15,25 @@
  */
 package com.watchrabbit.executor.wrapper;
 
+import com.watchrabbit.commons.clock.Clock;
+import com.watchrabbit.commons.clock.SystemClock;
+import java.time.Instant;
+
 /**
  *
  * @author Mariusz
  */
 public class CircutBreaker {
 
+    private static final Long RETRY_TIMEOUT = 10000l;
+
+    private final Clock clock = SystemClock.getInstance();
+
     private String commandName;
 
     private boolean closed = true;
+
+    private Instant instant;
 
     public CircutBreaker(String commandName) {
         this.commandName = commandName;
@@ -38,11 +48,16 @@ public class CircutBreaker {
     }
 
     public boolean isClosed() {
+        if (!closed) {
+            closed = instant.plusMillis(RETRY_TIMEOUT)
+                    .isBefore(clock.getInstant());
+        }
         return closed;
     }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    public void open() {
+        this.instant = clock.getInstant();
+        this.closed = false;
     }
 
 }

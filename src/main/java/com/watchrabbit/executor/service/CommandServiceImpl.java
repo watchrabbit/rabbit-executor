@@ -32,26 +32,30 @@ public class CommandServiceImpl implements CommandService {
 
     private final ThreadPoolManager poolManager = new ThreadPoolManagerImpl();
 
+    private final CircutBreakerService breakerService = new CircutBreakerServiceImpl();
+
     @Override
     public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfigWrapper command) {
-        ExecutorService pool;
-        if (command.isDedicatedThreadPool()) {
-            pool = poolManager.getPool(command.getCommandName());
-        } else {
-            pool = poolManager.getPool();
-        }
-        return new AsynchronousInvoker().invoke(pool, callable);
+        ExecutorService pool = getPool(command);
+        Callable<V> wrappedWithBreaker = breakerService.addCircutBreaker(callable, command.getCommandName());
+        return new AsynchronousInvoker().invoke(pool, wrappedWithBreaker);
     }
 
     @Override
     public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfigWrapper command) {
+        ExecutorService pool = getPool(command);
+        Callable<V> wrappedWithBreaker = breakerService.addCircutBreaker(callable, command.getCommandName());
+        return new SynchronousInvoker().invoke(pool, wrappedWithBreaker);
+    }
+
+    private ExecutorService getPool(CommandConfigWrapper command) {
         ExecutorService pool;
         if (command.isDedicatedThreadPool()) {
             pool = poolManager.getPool(command.getCommandName());
         } else {
             pool = poolManager.getPool();
         }
-        return new SynchronousInvoker().invoke(pool, callable);
+        return pool;
     }
 
 }

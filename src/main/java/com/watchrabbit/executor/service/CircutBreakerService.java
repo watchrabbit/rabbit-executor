@@ -15,32 +15,14 @@
  */
 package com.watchrabbit.executor.service;
 
-import com.watchrabbit.commons.marker.Todo;
-import com.watchrabbit.executor.wrapper.CircutBreaker;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
  * @author Mariusz
  */
-public class CircutBreakerService {
+public interface CircutBreakerService {
 
-    private static final ConcurrentHashMap<String, CircutBreaker> circutBreakers = new ConcurrentHashMap<>();
-
-    public synchronized <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName) {
-        if (!circutBreakers.containsKey(commandName)) {
-            circutBreakers.put(commandName, new CircutBreaker(commandName));
-        }
-        CircutBreaker breaker = circutBreakers.get(commandName);
-        return wrap(callable, breaker);
-    }
-
-    @Todo
-    private <V> Callable<V> wrap(Callable<V> callable, CircutBreaker breaker) {
-        return () -> {
-            return callable.call();
-        };
-    }
+    <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName);
 
 }
