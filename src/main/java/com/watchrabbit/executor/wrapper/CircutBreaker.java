@@ -25,7 +25,7 @@ import java.time.Instant;
  */
 public class CircutBreaker {
 
-    private static final Long RETRY_TIMEOUT = 10000l;
+    private static final Long RETRY_TIMEOUT = 1000l;
 
     private final Clock clock = SystemClock.getInstance();
 

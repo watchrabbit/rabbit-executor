@@ -18,7 +18,6 @@ package com.watchrabbit.executor.command;
 import com.watchrabbit.commons.callback.CheckedConsumer;
 import com.watchrabbit.commons.exception.SystemException;
 import com.watchrabbit.commons.marker.Todo;
-import com.watchrabbit.executor.exception.CommandNameGeneratorException;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
@@ -27,7 +26,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +41,8 @@ public class ExecutorCommand<V> {
 
     private final CommandConfigWrapper config = new CommandConfigWrapper();
 
-    private ExecutorCommand() {
-
+    private ExecutorCommand(String circutName) {
+        config.setCommandName(circutName);
     }
 
     public ExecutorCommand withCommandName(String name) {
@@ -67,7 +65,6 @@ public class ExecutorCommand<V> {
     }
 
     public V invoke(Callable<V> callable) throws ExecutionException {
-        init();
         try {
             return service.executeSynchronously(callable, config).get();
         } catch (InterruptedException ex) {
@@ -85,37 +82,15 @@ public class ExecutorCommand<V> {
     }
 
     public Future<V> queue(Callable<V> callable) {
-        init();
         return service.executeAsynchronously(callable, config);
     }
 
     public void observe(Callable<V> callable, CheckedConsumer<V> onSuccess) {
-        init();
         service.executeAsynchronously(wrap(callable, onSuccess), config);
     }
 
     public void observe(Callable<V> callable, CheckedConsumer<V> onSuccess, Consumer<Exception> onFailure) {
-        init();
         service.executeAsynchronously(wrap(callable, onSuccess, onFailure), config);
-    }
-
-    @Todo("Extract this method")
-    private synchronized void init() {
-        if (StringUtils.isBlank(config.getCommandName())) {
-            try {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                if (stackTrace.length < 4) {
-                    throw new CommandNameGeneratorException("Cannot auto generate command name");
-                }
-                String generatedName = new StringBuilder(stackTrace[3].getClassName())
-                        .append(":")
-                        .append(stackTrace[3].getMethodName())
-                        .toString();
-                config.setCommandName(generatedName);
-            } catch (SecurityException ex) {
-                throw new CommandNameGeneratorException("Cannot auto generate command name", ex);
-            }
-        }
     }
 
     private <V> Callable<V> wrap(Callable<V> callable, CheckedConsumer<V> successConsumer) {
@@ -138,8 +113,8 @@ public class ExecutorCommand<V> {
         };
     }
 
-    public static <V> ExecutorCommand<V> executor() {
-        return new ExecutorCommand<>();
+    public static <V> ExecutorCommand<V> executor(String circutName) {
+        return new ExecutorCommand<>(circutName);
     }
 
 }

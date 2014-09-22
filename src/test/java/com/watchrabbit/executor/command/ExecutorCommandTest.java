@@ -32,7 +32,7 @@ public class ExecutorCommandTest {
     @Test
     public void shoudlInvokeMethod() throws ExecutionException {
         CountDownLatch latch = new CountDownLatch(1);
-        executor()
+        executor("")
                 .invoke(()
                         -> latch.countDown()
                 );
@@ -44,7 +44,7 @@ public class ExecutorCommandTest {
     public void shoudlBreakCircut() throws ExecutionException {
         CountDownLatch latch = new CountDownLatch(1);
         try {
-            executor()
+            executor("config")
                     .invoke(new CheckedRunnable() {
 
                         @Override
@@ -57,7 +57,7 @@ public class ExecutorCommandTest {
         }
 
         try {
-            executor()
+            executor("config")
                     .invoke(()
                             -> latch.countDown()
                     );
