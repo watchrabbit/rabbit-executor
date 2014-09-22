@@ -64,7 +64,6 @@ public class ExecutorCommandTest {
     public void shoudlInvokeMethodAsynchronously() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         executor("")
-                .silentFail()
                 .queue(()
                         -> latch.countDown()
                 );
@@ -77,9 +76,24 @@ public class ExecutorCommandTest {
     public void shoudlCallOnSuccessMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
         executor("")
-                .silentFail()
                 .observe(() -> latch.countDown(),
                         () -> latch.countDown()
+                );
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        assertThat(latch.getCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void shoudlCallOnErrorMethod() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        executor("")
+                .observe((CheckedRunnable) () -> {
+                    throw new SystemException("exception");
+                },
+                () -> {
+                },
+                (Exception ex) -> latch.countDown()
                 );
 
         latch.await(1000, TimeUnit.MILLISECONDS);
