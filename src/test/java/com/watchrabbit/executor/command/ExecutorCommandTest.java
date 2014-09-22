@@ -33,7 +33,20 @@ public class ExecutorCommandTest {
     public void shoudlInvokeMethod() {
         CountDownLatch latch = new CountDownLatch(1);
         executor("")
-                .silentFail()
+                .silentFailMode()
+                .invoke(()
+                        -> latch.countDown()
+                );
+
+        assertThat(latch.getCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void shoudlInvokeMethodUsingDedicatedPool() {
+        CountDownLatch latch = new CountDownLatch(1);
+        executor("")
+                .withDedicatedThreadPool()
+                .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
                 );
@@ -46,13 +59,13 @@ public class ExecutorCommandTest {
         CountDownLatch latch = new CountDownLatch(1);
 
         executor("config")
-                .silentFail()
+                .silentFailMode()
                 .invoke((CheckedRunnable) () -> {
                     throw new SystemException();
                 });
 
         executor("config")
-                .silentFail()
+                .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
                 );

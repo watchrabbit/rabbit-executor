@@ -144,7 +144,7 @@ public class ExecutorCommand<V> {
         };
     }
 
-    public SilentFailExecutorCommand<V> silentFail() {
+    public SilentFailExecutorCommand<V> silentFailMode() {
         return new SilentFailExecutorCommand<>(config);
     }
 
