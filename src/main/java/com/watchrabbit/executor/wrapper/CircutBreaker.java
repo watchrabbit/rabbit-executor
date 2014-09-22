@@ -35,8 +35,7 @@ public class CircutBreaker {
 
     private Instant instant;
 
-    public CircutBreaker(String commandName) {
-        this.commandName = commandName;
+    public CircutBreaker() {
     }
 
     public String getCommandName() {

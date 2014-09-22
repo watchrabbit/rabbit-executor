@@ -52,7 +52,7 @@ public class ExecutorCommand<V> {
         return this;
     }
 
-    public void invoke(CheckedRunnable runnable) throws ExecutionException {
+    public <V> void invoke(CheckedRunnable runnable) throws ExecutionException {
         invoke(()
                 -> {
                     runnable.run();
@@ -60,7 +60,7 @@ public class ExecutorCommand<V> {
                 });
     }
 
-    public V invoke(Callable<V> callable) throws ExecutionException {
+    public <V> V invoke(Callable<V> callable) throws ExecutionException {
         try {
             return service.executeSynchronously(callable, config).get();
         } catch (InterruptedException ex) {
@@ -81,19 +81,19 @@ public class ExecutorCommand<V> {
         return service.executeAsynchronously(callable, config);
     }
 
-    public void observe(Callable<V> callable, CheckedConsumer<V> onSuccess) {
+    public <V> void observe(Callable<V> callable, CheckedConsumer<V> onSuccess) {
         service.executeAsynchronously(wrap(callable, onSuccess), config);
     }
 
-    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess) {
+    public <V> void observe(CheckedRunnable runnable, CheckedRunnable onSuccess) {
         service.executeAsynchronously(wrap(runnable, onSuccess), config);
     }
 
-    public void observe(Callable<V> callable, CheckedConsumer<V> onSuccess, Consumer<Exception> onFailure) {
+    public <V> void observe(Callable<V> callable, CheckedConsumer<V> onSuccess, Consumer<Exception> onFailure) {
         service.executeAsynchronously(wrap(callable, onSuccess, onFailure), config);
     }
 
-    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> onFailure) {
+    public <V> void observe(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> onFailure) {
         service.executeAsynchronously(wrap(runnable, onSuccess, onFailure), config);
     }
 

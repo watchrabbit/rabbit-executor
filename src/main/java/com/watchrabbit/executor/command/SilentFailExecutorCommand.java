@@ -35,7 +35,7 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
     }
 
     @Override
-    public V invoke(Callable<V> callable) {
+    public <V> V invoke(Callable<V> callable) {
         try {
             return super.invoke(callable);
         } catch (ExecutionException ex) {
@@ -45,7 +45,7 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
     }
 
     @Override
-    public void invoke(CheckedRunnable runnable) {
+    public <V> void invoke(CheckedRunnable runnable) {
         try {
             super.invoke(runnable);
         } catch (ExecutionException ex) {

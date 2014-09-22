@@ -85,6 +85,22 @@ public class ExecutorCommandTest {
     }
 
     @Test
+    public void shoudlCallOnSuccessMethodWithResult() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        executor("")
+                .observe(() -> true,
+                        (result) -> {
+                            if (result) {
+                                latch.countDown();
+                            }
+                        }
+                );
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        assertThat(latch.getCount()).isEqualTo(0);
+    }
+
+    @Test
     public void shoudlCallOnErrorMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         executor("")

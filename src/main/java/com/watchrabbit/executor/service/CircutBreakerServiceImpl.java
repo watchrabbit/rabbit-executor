@@ -27,20 +27,28 @@ import org.slf4j.LoggerFactory;
  * @author Mariusz
  */
 public class CircutBreakerServiceImpl implements CircutBreakerService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(CircutBreakerServiceImpl.class);
-
+    
     private static final ConcurrentHashMap<String, CircutBreaker> circutBreakers = new ConcurrentHashMap<>();
-
+    
     @Override
-    public synchronized <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName) {
+    public <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName) {
         if (!circutBreakers.containsKey(commandName)) {
-            circutBreakers.put(commandName, new CircutBreaker(commandName));
+            createCircutBreaker(commandName);
         }
         CircutBreaker breaker = circutBreakers.get(commandName);
         return wrap(callable, breaker);
     }
-
+    
+    private static synchronized void createCircutBreaker(String commandName) {
+        if (!circutBreakers.containsKey(commandName)) {
+            CircutBreaker circutBreaker = new CircutBreaker();
+            circutBreaker.setCommandName(commandName);
+            circutBreakers.put(commandName, circutBreaker);
+        }
+    }
+    
     private <V> Callable<V> wrap(Callable<V> callable, CircutBreaker breaker) {
         return () -> {
             if (!breaker.isClosed()) {
@@ -57,5 +65,5 @@ public class CircutBreakerServiceImpl implements CircutBreakerService {
             }
         };
     }
-
+    
 }
