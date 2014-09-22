@@ -92,12 +92,40 @@ public class ExecutorCommand<V> {
         service.executeAsynchronously(wrap(callable, onSuccess), config);
     }
 
+    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess) {
+        service.executeAsynchronously(wrap(runnable, onSuccess), config);
+    }
+
     public void observe(Callable<V> callable, CheckedConsumer<V> onSuccess, Consumer<Exception> onFailure) {
         service.executeAsynchronously(wrap(callable, onSuccess, onFailure), config);
     }
 
+    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> onFailure) {
+        service.executeAsynchronously(wrap(runnable, onSuccess, onFailure), config);
+    }
+
     private <V> Callable<V> wrap(Callable<V> callable, CheckedConsumer<V> successConsumer) {
         return wrap(callable, successConsumer, (ex) -> LOGGER.debug("Exception thrown by observed callable", ex));
+    }
+
+    private <V> Callable<V> wrap(CheckedRunnable runnable, CheckedRunnable onSuccess) {
+        return wrap(runnable, onSuccess, (ex) -> LOGGER.debug("Exception thrown by observed callable", ex));
+    }
+
+    private <V> Callable<V> wrap(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> errorConsumer) {
+        return () -> {
+            try {
+                runnable.run();
+                try {
+                    onSuccess.run();
+                } catch (Exception ex) {
+                    LOGGER.debug("Suppress exception throwed by success callback", ex);
+                }
+            } catch (Exception ex) {
+                errorConsumer.accept(ex);
+            }
+            return null;
+        };
     }
 
     private <V> Callable<V> wrap(Callable<V> callable, CheckedConsumer<V> successConsumer, Consumer<Exception> errorConsumer) {

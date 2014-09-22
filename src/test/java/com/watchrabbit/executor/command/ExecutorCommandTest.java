@@ -19,6 +19,7 @@ import com.watchrabbit.commons.exception.SystemException;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -59,4 +60,29 @@ public class ExecutorCommandTest {
         assertThat(latch.getCount()).isEqualTo(1);
     }
 
+    @Test
+    public void shoudlInvokeMethodAsynchronously() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        executor("")
+                .silentFail()
+                .queue(()
+                        -> latch.countDown()
+                );
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        assertThat(latch.getCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void shoudlCallOnSuccessMethod() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+        executor("")
+                .silentFail()
+                .observe(() -> latch.countDown(),
+                        () -> latch.countDown()
+                );
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        assertThat(latch.getCount()).isEqualTo(0);
+    }
 }
