@@ -39,10 +39,13 @@ public class ExecutorCommand<V> {
 
     private final CommandService service = new CommandServiceImpl();
 
-    private final CommandConfigWrapper config = new CommandConfigWrapper();
+    private CommandConfigWrapper config = new CommandConfigWrapper();
 
-    private ExecutorCommand(String circutName) {
-        config.setCommandName(circutName);
+    protected ExecutorCommand() {
+    }
+
+    protected ExecutorCommand(CommandConfigWrapper config) {
+        this.config = config;
     }
 
     public ExecutorCommand withCommandName(String name) {
@@ -113,8 +116,12 @@ public class ExecutorCommand<V> {
         };
     }
 
+    public SilentFailExecutorCommand<V> silentFail() {
+        return new SilentFailExecutorCommand<>(config);
+    }
+
     public static <V> ExecutorCommand<V> executor(String circutName) {
-        return new ExecutorCommand<>(circutName);
+        return new ExecutorCommand<>().withCommandName(circutName);
     }
 
 }

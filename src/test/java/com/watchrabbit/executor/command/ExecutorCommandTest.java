@@ -19,7 +19,6 @@ import com.watchrabbit.commons.exception.SystemException;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -30,9 +29,10 @@ import org.junit.Test;
 public class ExecutorCommandTest {
 
     @Test
-    public void shoudlInvokeMethod() throws ExecutionException {
+    public void shoudlInvokeMethod() {
         CountDownLatch latch = new CountDownLatch(1);
         executor("")
+                .silentFail()
                 .invoke(()
                         -> latch.countDown()
                 );
@@ -41,28 +41,20 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlBreakCircut() throws ExecutionException {
+    public void shoudlBreakCircut() {
         CountDownLatch latch = new CountDownLatch(1);
-        try {
-            executor("config")
-                    .invoke(new CheckedRunnable() {
 
-                        @Override
-                        public void run() throws Exception {
-                            throw new SystemException();
-                        }
+        executor("config")
+                .silentFail()
+                .invoke((CheckedRunnable) () -> {
+                    throw new SystemException();
+                });
 
-                    });
-        } catch (ExecutionException ex) {
-        }
-
-        try {
-            executor("config")
-                    .invoke(()
-                            -> latch.countDown()
-                    );
-        } catch (ExecutionException ex) {
-        }
+        executor("config")
+                .silentFail()
+                .invoke(()
+                        -> latch.countDown()
+                );
 
         assertThat(latch.getCount()).isEqualTo(1);
     }
