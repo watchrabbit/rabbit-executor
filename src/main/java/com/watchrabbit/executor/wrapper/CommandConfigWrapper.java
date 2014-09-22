@@ -21,17 +21,7 @@ package com.watchrabbit.executor.wrapper;
  */
 public class CommandConfigWrapper {
 
-    private boolean dedicatedThreadPool;
-
     private String commandName = "";
-
-    public boolean isDedicatedThreadPool() {
-        return dedicatedThreadPool;
-    }
-
-    public void setDedicatedThreadPool(boolean dedicatedThreadPool) {
-        this.dedicatedThreadPool = dedicatedThreadPool;
-    }
 
     public String getCommandName() {
         return commandName;
@@ -39,29 +29,6 @@ public class CommandConfigWrapper {
 
     public void setCommandName(String commandName) {
         this.commandName = commandName;
-    }
-
-    public static class Builder {
-
-        public Builder() {
-            this.item = new CommandConfigWrapper();
-        }
-
-        private final CommandConfigWrapper item;
-
-        public Builder withDedicatedThreadPool(final boolean dedicatedThreadPool) {
-            this.item.dedicatedThreadPool = dedicatedThreadPool;
-            return this;
-        }
-
-        public Builder withCommandName(final String commandName) {
-            this.item.commandName = commandName;
-            return this;
-        }
-
-        public CommandConfigWrapper build() {
-            return this.item;
-        }
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.watchrabbit.executor.pool;
 
-import com.watchrabbit.commons.marker.Todo;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,15 +26,8 @@ public class ThreadPoolManagerImpl implements ThreadPoolManager {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
-    @Todo
     @Override
     public ExecutorService getPool() {
-        return pool;
-    }
-
-    @Todo
-    @Override
-    public ExecutorService getPool(String poolName) {
         return pool;
     }
 

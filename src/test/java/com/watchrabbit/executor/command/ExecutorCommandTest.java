@@ -42,19 +42,6 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlInvokeMethodUsingDedicatedPool() {
-        CountDownLatch latch = new CountDownLatch(1);
-        executor("")
-                .withDedicatedThreadPool()
-                .silentFailMode()
-                .invoke(()
-                        -> latch.countDown()
-                );
-
-        assertThat(latch.getCount()).isEqualTo(0);
-    }
-
-    @Test
     public void shoudlBreakCircut() {
         CountDownLatch latch = new CountDownLatch(1);
 

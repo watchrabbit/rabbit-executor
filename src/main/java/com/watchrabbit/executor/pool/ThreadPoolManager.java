@@ -25,5 +25,4 @@ public interface ThreadPoolManager {
 
     ExecutorService getPool();
 
-    ExecutorService getPool(String poolName);
 }

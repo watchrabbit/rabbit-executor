@@ -17,7 +17,6 @@ package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.callback.CheckedConsumer;
 import com.watchrabbit.commons.exception.SystemException;
-import com.watchrabbit.commons.marker.Todo;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
@@ -53,12 +52,6 @@ public class ExecutorCommand<V> {
         return this;
     }
 
-    public ExecutorCommand withDedicatedThreadPool() {
-        this.config.setDedicatedThreadPool(true);
-        return this;
-    }
-
-    @Todo("Prepare fail silent mode")
     public void invoke(CheckedRunnable runnable) throws ExecutionException {
         invoke(()
                 -> {
