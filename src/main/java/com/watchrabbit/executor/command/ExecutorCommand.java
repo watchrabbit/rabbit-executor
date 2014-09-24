@@ -19,8 +19,9 @@ import com.watchrabbit.commons.callback.CheckedConsumer;
 import com.watchrabbit.commons.exception.SystemException;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
+import com.watchrabbit.executor.wrapper.CacheConfig;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
-import com.watchrabbit.executor.wrapper.CommandConfigWrapper;
+import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -38,16 +39,18 @@ public class ExecutorCommand<V> {
 
     private final CommandService service = new CommandServiceImpl();
 
-    private CommandConfigWrapper config = new CommandConfigWrapper();
+    private final CommandConfig config;
 
-    protected ExecutorCommand() {
-    }
-
-    protected ExecutorCommand(CommandConfigWrapper config) {
+    protected ExecutorCommand(CommandConfig config) {
         this.config = config;
     }
 
-    public ExecutorCommand withCommandName(String name) {
+    public ExecutorCommand<V> withCache(CacheConfig cacheConfig) {
+        config.setCacheConfig(cacheConfig);
+        return this;
+    }
+
+    public ExecutorCommand<V> withCommandName(String name) {
         this.config.setCommandName(name);
         return this;
     }
@@ -142,7 +145,7 @@ public class ExecutorCommand<V> {
     }
 
     public static <V> ExecutorCommand<V> executor(String circutName) {
-        return new ExecutorCommand<>().withCommandName(circutName);
+        return new ExecutorCommand<V>(new CommandConfig()).withCommandName(circutName);
     }
 
 }

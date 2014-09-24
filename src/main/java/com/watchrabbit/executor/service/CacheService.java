@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.watchrabbit.executor.wrapper;
+package com.watchrabbit.executor.service;
+
+import com.watchrabbit.executor.wrapper.CacheConfig;
+import java.util.concurrent.Callable;
 
 /**
  *
  * @author Mariusz
  */
-public class CommandConfigWrapper {
+public interface CacheService {
 
-    private String commandName = "";
-
-    public String getCommandName() {
-        return commandName;
-    }
-
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
-    }
+    <V> Callable<V> addCache(Callable<V> wrapped, CacheConfig cacheConfig);
 
 }

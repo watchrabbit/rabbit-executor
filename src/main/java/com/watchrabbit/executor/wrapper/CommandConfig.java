@@ -13,20 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.watchrabbit.executor.service;
-
-import com.watchrabbit.executor.wrapper.CommandConfig;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+package com.watchrabbit.executor.wrapper;
 
 /**
  *
  * @author Mariusz
  */
-public interface CommandService {
+public class CommandConfig {
 
-    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfig commandWrapper);
+    private String commandName = "";
 
-    public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfig commandWrapper);
+    private CacheConfig cacheConfig;
+
+    public CacheConfig getCacheConfig() {
+        return cacheConfig;
+    }
+
+    public void setCacheConfig(CacheConfig cacheConfig) {
+        this.cacheConfig = cacheConfig;
+    }
+
+    public String getCommandName() {
+        return commandName;
+    }
+
+    public void setCommandName(String commandName) {
+        this.commandName = commandName;
+    }
 
 }

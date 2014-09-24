@@ -19,7 +19,7 @@ import com.watchrabbit.executor.invoker.AsynchronousInvoker;
 import com.watchrabbit.executor.invoker.SynchronousInvoker;
 import com.watchrabbit.executor.pool.ThreadPoolManager;
 import com.watchrabbit.executor.pool.ThreadPoolManagerImpl;
-import com.watchrabbit.executor.wrapper.CommandConfigWrapper;
+import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -34,18 +34,27 @@ public class CommandServiceImpl implements CommandService {
 
     private final CircutBreakerService breakerService = new CircutBreakerServiceImpl();
 
+    private final CacheService cacheService = new CacheServiceImpl();
+
     @Override
-    public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfigWrapper command) {
+    public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfig command) {
         ExecutorService pool = poolManager.getPool();
-        Callable<V> wrappedWithBreaker = breakerService.addCircutBreaker(callable, command.getCommandName());
-        return new AsynchronousInvoker().invoke(pool, wrappedWithBreaker);
+        Callable<V> wrapped = wrapp(callable, command);
+        return new AsynchronousInvoker().invoke(pool, wrapped);
     }
 
     @Override
-    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfigWrapper command) {
+    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfig command) {
         ExecutorService pool = poolManager.getPool();
-        Callable<V> wrappedWithBreaker = breakerService.addCircutBreaker(callable, command.getCommandName());
-        return new SynchronousInvoker().invoke(pool, wrappedWithBreaker);
+        Callable<V> wrapped = wrapp(callable, command);
+        return new SynchronousInvoker().invoke(pool, wrapped);
     }
 
+    private <V> Callable<V> wrapp(Callable<V> callable, CommandConfig command) {
+        Callable<V> wrapped = breakerService.addCircutBreaker(callable, command.getCommandName());
+        if (command.getCacheConfig() != null) {
+            wrapped = cacheService.addCache(wrapped, command.getCacheConfig());
+        }
+        return wrapped;
+    }
 }

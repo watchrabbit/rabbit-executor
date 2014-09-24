@@ -16,7 +16,7 @@
 package com.watchrabbit.executor.command;
 
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
-import com.watchrabbit.executor.wrapper.CommandConfigWrapper;
+import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SilentFailExecutorCommand.class);
 
-    protected SilentFailExecutorCommand(CommandConfigWrapper config) {
+    protected SilentFailExecutorCommand(CommandConfig config) {
         super(config);
     }
 
