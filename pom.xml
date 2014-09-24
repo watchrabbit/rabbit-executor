@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.watchrabbit</groupId>
     <artifactId>rabbit-executor</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Watchrabbit - Executor</name>
     <description>Utils and tools with java 8 syntax support</description>
