@@ -21,8 +21,8 @@ import java.util.concurrent.Callable;
  *
  * @author Mariusz
  */
-public interface CircutBreakerService {
+public interface CircuitBreakerService {
 
-    <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName);
+    <V> Callable<V> addCircuitBreaker(Callable<V> callable, String commandName);
 
 }

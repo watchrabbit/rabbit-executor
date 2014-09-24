@@ -23,7 +23,7 @@ import java.time.Instant;
  *
  * @author Mariusz
  */
-public class CircutBreaker {
+public class CircuitBreaker {
 
     private static final Long RETRY_TIMEOUT = 1000l;
 
@@ -35,7 +35,7 @@ public class CircutBreaker {
 
     private Instant instant;
 
-    public CircutBreaker() {
+    public CircuitBreaker() {
     }
 
     public String getCommandName() {

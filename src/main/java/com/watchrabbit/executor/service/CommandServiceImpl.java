@@ -32,7 +32,7 @@ public class CommandServiceImpl implements CommandService {
 
     private final ThreadPoolManager poolManager = new ThreadPoolManagerImpl();
 
-    private final CircutBreakerService breakerService = new CircutBreakerServiceImpl();
+    private final CircuitBreakerService breakerService = new CircuitBreakerServiceImpl();
 
     private final CacheService cacheService = new CacheServiceImpl();
 
@@ -51,7 +51,7 @@ public class CommandServiceImpl implements CommandService {
     }
 
     private <V> Callable<V> wrapp(Callable<V> callable, CommandConfig command) {
-        Callable<V> wrapped = breakerService.addCircutBreaker(callable, command.getCommandName());
+        Callable<V> wrapped = breakerService.addCircuitBreaker(callable, command.getCommandName());
         if (command.getCacheConfig() != null) {
             wrapped = cacheService.addCache(wrapped, command.getCacheConfig());
         }

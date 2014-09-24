@@ -19,6 +19,6 @@ package com.watchrabbit.executor.exception;
  *
  * @author Mariusz
  */
-public class CircutOpenException extends Exception {
+public class CircuitOpenException extends Exception {
 
 }

@@ -34,6 +34,15 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
         super(config);
     }
 
+    /**
+     * Suppressing exceptions version of the same method from
+     * {@code ExecutorCommand}. Invokes code synchronously with circuit breaker
+     * and cache if configured.
+     *
+     * @param <V> type of returned value
+     * @param callable invoked by executor to return value
+     * @return {@code V} value returned by callable
+     */
     @Override
     public <V> V invoke(Callable<V> callable) {
         try {
@@ -44,8 +53,14 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
         }
     }
 
+    /**
+     * Suppressing exceptions version of the same method from
+     * {@code ExecutorCommand}. Invokes code synchronously with circuit breaker.
+     *
+     * @param runnable invoked by executor
+     */
     @Override
-    public <V> void invoke(CheckedRunnable runnable) {
+    public void invoke(CheckedRunnable runnable) {
         try {
             super.invoke(runnable);
         } catch (ExecutionException ex) {

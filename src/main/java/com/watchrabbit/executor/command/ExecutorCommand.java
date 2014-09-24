@@ -144,8 +144,8 @@ public class ExecutorCommand<V> {
         return new SilentFailExecutorCommand<>(config);
     }
 
-    public static <V> ExecutorCommand<V> executor(String circutName) {
-        return new ExecutorCommand<V>(new CommandConfig()).withCommandName(circutName);
+    public static <V> ExecutorCommand<V> executor(String circuitName) {
+        return new ExecutorCommand<V>(new CommandConfig()).withCommandName(circuitName);
     }
 
 }

@@ -15,8 +15,8 @@
  */
 package com.watchrabbit.executor.service;
 
-import com.watchrabbit.executor.exception.CircutOpenException;
-import com.watchrabbit.executor.wrapper.CircutBreaker;
+import com.watchrabbit.executor.exception.CircuitOpenException;
+import com.watchrabbit.executor.wrapper.CircuitBreaker;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
@@ -26,34 +26,34 @@ import org.slf4j.LoggerFactory;
  *
  * @author Mariusz
  */
-public class CircutBreakerServiceImpl implements CircutBreakerService {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(CircutBreakerServiceImpl.class);
-    
-    private static final ConcurrentHashMap<String, CircutBreaker> circutBreakers = new ConcurrentHashMap<>();
-    
+public class CircuitBreakerServiceImpl implements CircuitBreakerService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CircuitBreakerServiceImpl.class);
+
+    private static final ConcurrentHashMap<String, CircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();
+
     @Override
-    public <V> Callable<V> addCircutBreaker(Callable<V> callable, String commandName) {
-        if (!circutBreakers.containsKey(commandName)) {
-            createCircutBreaker(commandName);
+    public <V> Callable<V> addCircuitBreaker(Callable<V> callable, String commandName) {
+        if (!circuitBreakers.containsKey(commandName)) {
+            createCircuitBreaker(commandName);
         }
-        CircutBreaker breaker = circutBreakers.get(commandName);
+        CircuitBreaker breaker = circuitBreakers.get(commandName);
         return wrap(callable, breaker);
     }
-    
-    private static synchronized void createCircutBreaker(String commandName) {
-        if (!circutBreakers.containsKey(commandName)) {
-            CircutBreaker circutBreaker = new CircutBreaker();
-            circutBreaker.setCommandName(commandName);
-            circutBreakers.put(commandName, circutBreaker);
+
+    private static synchronized void createCircuitBreaker(String commandName) {
+        if (!circuitBreakers.containsKey(commandName)) {
+            CircuitBreaker circuitBreaker = new CircuitBreaker();
+            circuitBreaker.setCommandName(commandName);
+            circuitBreakers.put(commandName, circuitBreaker);
         }
     }
-    
-    private <V> Callable<V> wrap(Callable<V> callable, CircutBreaker breaker) {
+
+    private <V> Callable<V> wrap(Callable<V> callable, CircuitBreaker breaker) {
         return () -> {
             if (!breaker.isClosed()) {
                 LOGGER.debug("Circut is open, skipping command {} execution and throwing exception", breaker.getCommandName());
-                throw new CircutOpenException();
+                throw new CircuitOpenException();
             } else {
                 LOGGER.debug("Circut is closed, executing command: {}", breaker.getCommandName());
                 try {
@@ -65,5 +65,5 @@ public class CircutBreakerServiceImpl implements CircutBreakerService {
             }
         };
     }
-    
+
 }
