@@ -45,17 +45,25 @@ public class ExecutorCommand<V> {
         this.config = config;
     }
 
+    /**
+     * Adds cache logic to callable processing.
+     *
+     * @param cacheConfig cache configuration used by executor
+     * @return {@code ExecutorCommand<V>} executor with cache configuration
+     */
     public ExecutorCommand<V> withCache(CacheConfig cacheConfig) {
         config.setCacheConfig(cacheConfig);
         return this;
     }
 
-    public ExecutorCommand<V> withCommandName(String name) {
-        this.config.setCommandName(name);
-        return this;
-    }
-
-    public <V> void invoke(CheckedRunnable runnable) throws ExecutionException {
+    /**
+     * Invokes runnable synchronously with respecting circuit logic and cache
+     * logic if configured.
+     *
+     * @param runnable method fired by executor
+     * @throws ExecutionException if runnable throws some exception
+     */
+    public void invoke(CheckedRunnable runnable) throws ExecutionException {
         invoke(()
                 -> {
                     runnable.run();
@@ -63,6 +71,15 @@ public class ExecutorCommand<V> {
                 });
     }
 
+    /**
+     * Invokes callable synchronously with respecting circuit logic and cache
+     * logic if configured.
+     *
+     * @param <V> type of value returned by this method
+     * @param callable method fired by executor
+     * @return {@code V} returns value returned by callable
+     * @throws ExecutionException if runnable throws some exception
+     */
     public <V> V invoke(Callable<V> callable) throws ExecutionException {
         try {
             return service.executeSynchronously(callable, config).get();
@@ -72,6 +89,12 @@ public class ExecutorCommand<V> {
         }
     }
 
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured.
+     *
+     * @param runnable method fired by executor
+     */
     public void queue(CheckedRunnable runnable) {
         queue(()
                 -> {
@@ -80,23 +103,68 @@ public class ExecutorCommand<V> {
                 });
     }
 
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured.
+     *
+     * @param callable method fired by executor
+     * @return {@code Future<V>} with value or exception returned by callable
+     */
     public Future<V> queue(Callable<V> callable) {
         return service.executeAsynchronously(callable, config);
     }
 
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured. If callable completed with success then the
+     * {@code onSuccess} method is called.
+     *
+     * @param <V> type of returned value by callable
+     * @param callable method fired by executor
+     * @param onSuccess method fired if callable is completed with success
+     */
     public <V> void observe(Callable<V> callable, CheckedConsumer<V> onSuccess) {
         service.executeAsynchronously(wrap(callable, onSuccess), config);
     }
 
-    public <V> void observe(CheckedRunnable runnable, CheckedRunnable onSuccess) {
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured. If callable completed with success then the
+     * {@code onSuccess} method is called.
+     *
+     * @param runnable method fired by executor
+     * @param onSuccess method fired if callable is completed with success
+     */
+    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess) {
         service.executeAsynchronously(wrap(runnable, onSuccess), config);
     }
 
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured. If callable completed with success then the
+     * {@code onSuccess} method is called. If callable throws exception then
+     * {@code onFailure} method is called
+     *
+     * @param <V> type of returned value by callable
+     * @param callable method fired by executor
+     * @param onSuccess method fired if callable is completed with success
+     * @param onFailure method fired if callable throws
+     */
     public <V> void observe(Callable<V> callable, CheckedConsumer<V> onSuccess, Consumer<Exception> onFailure) {
         service.executeAsynchronously(wrap(callable, onSuccess, onFailure), config);
     }
 
-    public <V> void observe(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> onFailure) {
+    /**
+     * Invokes runnable asynchronously with respecting circuit logic and cache
+     * logic if configured. If callable completed with success then the
+     * {@code onSuccess} method is called. If callable throws exception then
+     * {@code onFailure} method is called
+     *
+     * @param runnable method fired by executor
+     * @param onSuccess method fired if callable is completed with success
+     * @param onFailure method fired if callable throws
+     */
+    public void observe(CheckedRunnable runnable, CheckedRunnable onSuccess, Consumer<Exception> onFailure) {
         service.executeAsynchronously(wrap(runnable, onSuccess, onFailure), config);
     }
 
@@ -140,12 +208,27 @@ public class ExecutorCommand<V> {
         };
     }
 
+    /**
+     * Enables exception suppressing mode.
+     *
+     * @return {@code SilentFailExecutorCommand} with exception suppressing
+     */
     public SilentFailExecutorCommand<V> silentFailMode() {
         return new SilentFailExecutorCommand<>(config);
     }
 
+    /**
+     * Creates new executor with circuit breaker with name {@code circuitName}
+     * used to determine if circuit is closed or open by another executors.
+     *
+     * @param <V> type returned by callable methods
+     * @param circuitName used to enable circuit breaker
+     * @return {@code ExecutorCommand<V>}
+     */
     public static <V> ExecutorCommand<V> executor(String circuitName) {
-        return new ExecutorCommand<V>(new CommandConfig()).withCommandName(circuitName);
+        CommandConfig commandConfig = new CommandConfig();
+        commandConfig.setCommandName(circuitName);
+        return new ExecutorCommand<>(commandConfig);
     }
 
 }
