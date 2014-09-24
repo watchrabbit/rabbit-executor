@@ -18,6 +18,7 @@ package com.watchrabbit.executor.command;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
 import static com.watchrabbit.executor.wrapper.CacheConfig.cache;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -73,6 +74,39 @@ public class CacheTest {
         String secondInvoke = executor("")
                 .withCache(
                         cache("secondName", "key2")
+                ).silentFailMode()
+                .invoke(
+                        () -> {
+                            latch.countDown();
+                            return "abc";
+                        }
+                );
+
+        assertThat(latch.getCount()).isEqualTo(0);
+        assertThat(invoke).isEqualTo(secondInvoke);
+    }
+
+    @Test
+    public void shoudlInvokeTwiceBecauseTimeouted() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+        String invoke = ExecutorCommand.<String>executor("")
+                .withCache(
+                        cache("cache3", "key")
+                        .withCacheSize(1)
+                        .withExpireTime(1)
+                ).silentFailMode()
+                .invoke(
+                        () -> {
+                            latch.countDown();
+                            return "abc";
+                        }
+                );
+        latch.await(1, TimeUnit.SECONDS);
+        String secondInvoke = ExecutorCommand.<String>executor("")
+                .withCache(
+                        cache("cache3", "key")
+                        .withCacheSize(1)
+                        .withExpireTime(1)
                 ).silentFailMode()
                 .invoke(
                         () -> {
