@@ -60,6 +60,23 @@ public class Foo {
 Invoke methods immediately returns with `Feature`, and executes callback asynchronously.
 
 ## Callback
+Executor supports also callback mode. To run callback in this mode use `observe`, with successCallback as required parameter and errorCallback as optional parameter. 
+```java
+public class Foo {
+
+    public void bar() {
+          executor("foo-system")
+                .observe(() -> { // do something in foo-system
+                            ...
+                        }, (returnedValue) -> { // this success callback method consumes value returned by callback
+                            ...
+                        }, (exception) -> { // this error callback method consumes exception thrown by callback
+                            ...
+                        }
+                );
+    }
+}
+```
 
 Usage
 -----
