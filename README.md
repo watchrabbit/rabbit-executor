@@ -68,9 +68,11 @@ public class Foo {
           executor("foo-system")
                 .observe(() -> { // do something in foo-system
                             ...
-                        }, (returnedValue) -> { // this success callback method consumes value returned by callback
+                        }, (returnedValue) -> { // this success callback method consumes 
+                                                // value returned by callback
                             ...
-                        }, (exception) -> { // this error callback method consumes exception thrown by callback
+                        }, (exception) -> { // this error callback method consumes 
+                                            // exception thrown by callback
                             ...
                         }
                 );
