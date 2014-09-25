@@ -17,6 +17,7 @@ package com.watchrabbit.executor.service;
 
 import com.watchrabbit.executor.exception.CircuitOpenException;
 import com.watchrabbit.executor.wrapper.CircuitBreaker;
+import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
@@ -33,19 +34,19 @@ public class CircuitBreakerServiceImpl implements CircuitBreakerService {
     private static final ConcurrentHashMap<String, CircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();
 
     @Override
-    public <V> Callable<V> addCircuitBreaker(Callable<V> callable, String commandName) {
-        if (!circuitBreakers.containsKey(commandName)) {
-            createCircuitBreaker(commandName);
+    public <V> Callable<V> addCircuitBreaker(Callable<V> callable, CommandConfig commandConfig) {
+        if (!circuitBreakers.containsKey(commandConfig.getCommandName())) {
+            createCircuitBreaker(commandConfig);
         }
-        CircuitBreaker breaker = circuitBreakers.get(commandName);
+        CircuitBreaker breaker = circuitBreakers.get(commandConfig.getCommandName());
         return wrap(callable, breaker);
     }
 
-    private static synchronized void createCircuitBreaker(String commandName) {
-        if (!circuitBreakers.containsKey(commandName)) {
-            CircuitBreaker circuitBreaker = new CircuitBreaker();
-            circuitBreaker.setCommandName(commandName);
-            circuitBreakers.put(commandName, circuitBreaker);
+    private static synchronized void createCircuitBreaker(CommandConfig commandConfig) {
+        if (!circuitBreakers.containsKey(commandConfig.getCommandName())) {
+            CircuitBreaker circuitBreaker = new CircuitBreaker(commandConfig.getBreakerRetryTimeout());
+            circuitBreaker.setCommandName(commandConfig.getCommandName());
+            circuitBreakers.put(commandConfig.getCommandName(), circuitBreaker);
         }
     }
 

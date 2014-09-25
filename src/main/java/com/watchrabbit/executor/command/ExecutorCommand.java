@@ -22,9 +22,11 @@ import com.watchrabbit.executor.service.CommandServiceImpl;
 import com.watchrabbit.executor.wrapper.CacheConfig;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import com.watchrabbit.executor.wrapper.CommandConfig;
+import com.watchrabbit.executor.wrapper.RetryConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,30 @@ public class ExecutorCommand<V> {
      */
     public ExecutorCommand<V> withCache(CacheConfig cacheConfig) {
         config.setCacheConfig(cacheConfig);
+        return this;
+    }
+
+    /**
+     * Adds retry logic to callable processing.
+     *
+     * @param retryConfig retry configuration used by executor
+     * @return {@code ExecutorCommand<V>} executor with retry configuration
+     */
+    public ExecutorCommand<V> withRetry(RetryConfig retryConfig) {
+        config.setRetryConfig(retryConfig);
+        return this;
+    }
+
+    /**
+     * After {@code breakerRetryTimeout} elapses circuit breaker will
+     * automatically close connection.
+     *
+     * @param breakerRetryTimeout timeout used by circuit
+     * @param breakerRetryTimeUnit timeout time unit
+     * @return {@code ExecutorCommand<V>} executor with configured timeout
+     */
+    public ExecutorCommand<V> withBreakerRetryTimeout(long breakerRetryTimeout, TimeUnit breakerRetryTimeUnit) {
+        config.setBreakerRetryTimeout(breakerRetryTimeUnit.toMillis(breakerRetryTimeout));
         return this;
     }
 

@@ -79,7 +79,7 @@ public class CacheConfig {
      *
      * @param cacheName dedicated cache name used by executor
      * @param key that identifies value returned by callable in cache
-     * @return {@code V} value returned by callable
+     * @return {@code CacheConfig}
      */
     public static CacheConfig cache(String cacheName, String key) {
         return new CacheConfig(cacheName, key);

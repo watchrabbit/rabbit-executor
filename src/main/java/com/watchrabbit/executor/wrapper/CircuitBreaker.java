@@ -25,9 +25,9 @@ import java.time.Instant;
  */
 public class CircuitBreaker {
 
-    private static final Long RETRY_TIMEOUT = 1000l;
-
     private final Clock clock = SystemClock.getInstance();
+
+    private final long retryTimeout;
 
     private String commandName;
 
@@ -35,7 +35,8 @@ public class CircuitBreaker {
 
     private Instant instant;
 
-    public CircuitBreaker() {
+    public CircuitBreaker(long retryTimeout) {
+        this.retryTimeout = retryTimeout;
     }
 
     public String getCommandName() {
@@ -48,7 +49,7 @@ public class CircuitBreaker {
 
     public boolean isClosed() {
         if (!closed) {
-            closed = instant.plusMillis(RETRY_TIMEOUT)
+            closed = instant.plusMillis(retryTimeout)
                     .isBefore(clock.getInstant());
         }
         return closed;

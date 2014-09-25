@@ -36,24 +36,29 @@ public class CommandServiceImpl implements CommandService {
 
     private final CacheService cacheService = new CacheServiceImpl();
 
+    private final RetryService retryService = new RetryServiceImpl();
+
     @Override
     public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfig command) {
         ExecutorService pool = poolManager.getPool();
-        Callable<V> wrapped = wrapp(callable, command);
+        Callable<V> wrapped = wrapp(callable, pool, command);
         return new AsynchronousInvoker().invoke(pool, wrapped);
     }
 
     @Override
     public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfig command) {
         ExecutorService pool = poolManager.getPool();
-        Callable<V> wrapped = wrapp(callable, command);
+        Callable<V> wrapped = wrapp(callable, pool, command);
         return new SynchronousInvoker().invoke(pool, wrapped);
     }
 
-    private <V> Callable<V> wrapp(Callable<V> callable, CommandConfig command) {
-        Callable<V> wrapped = breakerService.addCircuitBreaker(callable, command.getCommandName());
+    private <V> Callable<V> wrapp(Callable<V> callable, ExecutorService pool, CommandConfig command) {
+        Callable<V> wrapped = breakerService.addCircuitBreaker(callable, command);
         if (command.getCacheConfig() != null) {
             wrapped = cacheService.addCache(wrapped, command.getCacheConfig());
+        }
+        if (command.getRetryConfig() != null) {
+            wrapped = retryService.addRetry(wrapped, pool, command.getRetryConfig());
         }
         return wrapped;
     }

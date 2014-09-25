@@ -23,7 +23,27 @@ public class CommandConfig {
 
     private String commandName = "";
 
+    private long breakerRetryTimeout = 1;
+
     private CacheConfig cacheConfig;
+
+    private RetryConfig retryConfig;
+
+    public RetryConfig getRetryConfig() {
+        return retryConfig;
+    }
+
+    public void setRetryConfig(RetryConfig retryConfig) {
+        this.retryConfig = retryConfig;
+    }
+
+    public long getBreakerRetryTimeout() {
+        return breakerRetryTimeout;
+    }
+
+    public void setBreakerRetryTimeout(long breakerRetryTimeout) {
+        this.breakerRetryTimeout = breakerRetryTimeout;
+    }
 
     public CacheConfig getCacheConfig() {
         return cacheConfig;

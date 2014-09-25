@@ -15,6 +15,7 @@
  */
 package com.watchrabbit.executor.service;
 
+import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
 
 /**
@@ -23,6 +24,6 @@ import java.util.concurrent.Callable;
  */
 public interface CircuitBreakerService {
 
-    <V> Callable<V> addCircuitBreaker(Callable<V> callable, String commandName);
+    <V> Callable<V> addCircuitBreaker(Callable<V> callable, CommandConfig commandConfig);
 
 }
