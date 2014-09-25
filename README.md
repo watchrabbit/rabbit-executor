@@ -26,7 +26,7 @@ Executor supports three diffrent types of command execution: synchronous, asynch
 
 ## Synchronous 
 
-To invoke some command synchronously write
+To invoke some command synchronously write:
 ```java
 public class Foo {
 
@@ -40,6 +40,8 @@ public class Foo {
 }
 
 ```
+"`foo-system`" is a name of remote system accessed in callback method. When there is more then one access point to remote system each one access point should create executor using `executor(foo-system)` to provide common circuit breaker for whole remote system.
+
 
 ## Asynchronous
 ## Callback
