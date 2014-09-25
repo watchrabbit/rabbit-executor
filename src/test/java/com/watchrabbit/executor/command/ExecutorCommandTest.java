@@ -16,6 +16,7 @@
 package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.exception.SystemException;
+import com.watchrabbit.commons.sleep.Sleep;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import java.util.concurrent.CountDownLatch;
@@ -52,6 +53,34 @@ public class ExecutorCommandTest {
                 });
 
         executor("config")
+                .silentFailMode()
+                .invoke(()
+                        -> latch.countDown()
+                );
+
+        assertThat(latch.getCount()).isEqualTo(1);
+    }
+
+    @Test
+    public void shoudlBreakCircutAndClose() {
+        CountDownLatch latch = new CountDownLatch(2);
+
+        executor("config34")
+                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
+                .silentFailMode()
+                .invoke((CheckedRunnable) () -> {
+                    throw new SystemException();
+                });
+
+        executor("config34")
+                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
+                .silentFailMode()
+                .invoke(()
+                        -> latch.countDown()
+                );
+        Sleep.untilTrue(() -> true, 100, TimeUnit.MICROSECONDS);
+        executor("config34")
+                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
