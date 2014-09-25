@@ -65,6 +65,7 @@ public class ExecutorCommandTest {
     public void shoudlBreakCircutAndClose() {
         CountDownLatch latch = new CountDownLatch(2);
 
+        System.err.println(System.currentTimeMillis());
         executor("config34")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
@@ -72,20 +73,24 @@ public class ExecutorCommandTest {
                     throw new SystemException();
                 });
 
+        System.err.println(System.currentTimeMillis());
         executor("config34")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
                 );
+        System.err.println(System.currentTimeMillis());
 
         Sleep.untilTrue(() -> true, 200, TimeUnit.MILLISECONDS);
+        System.err.println(System.currentTimeMillis());
         executor("config34")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
                 );
+        System.err.println(System.currentTimeMillis());
 
         assertThat(latch.getCount()).isEqualTo(1);
     }
