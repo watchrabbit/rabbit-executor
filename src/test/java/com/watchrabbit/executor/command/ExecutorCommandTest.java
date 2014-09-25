@@ -66,21 +66,22 @@ public class ExecutorCommandTest {
         CountDownLatch latch = new CountDownLatch(2);
 
         executor("config34")
-                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
+                .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke((CheckedRunnable) () -> {
                     throw new SystemException();
                 });
 
         executor("config34")
-                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
+                .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
                 );
-        Sleep.untilTrue(() -> true, 100, TimeUnit.MICROSECONDS);
+
+        Sleep.untilTrue(() -> true, 200, TimeUnit.MILLISECONDS);
         executor("config34")
-                .withBreakerRetryTimeout(100, TimeUnit.MICROSECONDS)
+                .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
