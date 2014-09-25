@@ -83,6 +83,7 @@ public class Foo {
 Usage
 -----
 
+## Circuit breaker
 ## Errors
 ## Request cache
 ## Fail silent
