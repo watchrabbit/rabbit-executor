@@ -87,8 +87,8 @@ Usage
 ## Errors
 ## Request cache
 ## Fail silent
+## Request retries
 ## Request batching - todo
-## Request retries - todo
 
 
 [coverage]:https://coveralls.io/r/watchrabbit/rabbit-executor
