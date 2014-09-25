@@ -81,13 +81,11 @@ public class Foo {
 Usage
 -----
 
-## Fallback
 ## Errors
 ## Request cache
-## Fail fast
 ## Fail silent
-## Request batching
-## Request retries 
+## Request batching - todo
+## Request retries - todo
 
 
 [coverage]:https://coveralls.io/r/watchrabbit/rabbit-executor
