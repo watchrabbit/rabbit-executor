@@ -22,7 +22,25 @@ Executor is a latency and fault tolerance library. Designed to manage and isolat
 Executions
 ----------
 
+Executor supports three diffrent types of command execution: synchronous, asynchronous and callback. Each one supports each feature described in usage section, such as circuit-breaker, thread pooling or cacheing.
+
 ## Synchronous 
+
+To invoke some command synchronously write
+```java
+public class Foo {
+
+    public void bar() throws ExecutionException {
+        executor("foo-system")
+                .invoke(()
+                        -> // do something
+                            ...
+                );
+    }
+}
+
+```
+
 ## Asynchronous
 ## Callback
 
