@@ -152,7 +152,6 @@
             <id>travis</id>
             <build>
                 <plugins>
-        
                     <!-- Used to set custom properties by means of ${argLine}, that is required for jacoco -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
