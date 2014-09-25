@@ -31,9 +31,9 @@ To invoke some command synchronously write:
 public class Foo {
 
     public void bar() throws ExecutionException {
-        executor("foo-system")
+        V returnedValue = executor("foo-system")
                 .invoke(()
-                        -> // do something
+                        -> // do something in foo-system
                             ...
                 );
     }
@@ -44,6 +44,21 @@ public class Foo {
 
 
 ## Asynchronous
+To execute some command asynchronously instead of `invoke` use `queue`.
+```java
+public class Foo {
+
+    public void bar() {
+        Future<V> returned = executor("foo-system")
+                .queue(()
+                        -> // do something in foo-system
+                            ...
+                );
+    }
+}
+```
+Invoke methods immediately returns with `Feature`, and executes callback asynchronously.
+
 ## Callback
 
 Usage
