@@ -88,6 +88,7 @@ Usage
 ## Request cache
 ## Fail silent
 ## Request retries
+
 ## Request batching - todo
 
 
