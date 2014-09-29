@@ -33,7 +33,7 @@ public class RetryTest {
     public void shoudlInvokeTwice() throws ExecutionException {
         CountDownLatch latch = new CountDownLatch(2);
 
-        String invoke = ExecutorCommand.<String>executor("")
+        String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwice")
                 .withBreakerRetryTimeout(-1, TimeUnit.MILLISECONDS)
                 .withRetry(
                         retry()
