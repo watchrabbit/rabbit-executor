@@ -82,8 +82,11 @@ public class Foo {
 
 Usage
 -----
+Each one of Executor features provides few customization options and introduces some default values.
 
 ## Circuit breaker
+Circuit breakers are created by `circuitName` provided in executor creation. When a executor with `foo` circuit name opens each other executor with name `foo` opens. Open circuit skips command execution and throws `CircuitOpenException`. When `breakerRetryTimeout` elapses breaker closes circuit. Default value of `breakerRetryTimeout` is 1000 miliseconds.
+
 ## Errors
 ## Request cache
 ## Fail silent
