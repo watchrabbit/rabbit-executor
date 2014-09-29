@@ -94,6 +94,25 @@ Errors processing depends on execution method. Method `invoke` throws `Execution
 Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode`.
 
 ## Request cache
+Executor supports callback results cacheing. To enable this feature configure cache via `withCache` method. 
+```java
+public class Foo {
+
+    public void bar() throws ExecutionException {
+        V returnedValue = executor("foo-system")
+                .withCache(
+                        cache("cacheName", "key")
+                )
+                .invoke(()
+                        -> // do something in foo-system
+                            ...
+                );
+    }
+}
+
+```
+Method `cache` takes cache name and key. Cache name should be unique for each command. Key is used to store returned value in cache. Method `withCacheSize` in cache builder configures size of cache map,  and `withExpireTime` method sets timeout - when this timeout elapses result should be removed from cache.
+
 ## Request retries
 
 ## Request batching - todo
