@@ -8,14 +8,14 @@ Watchrabbit - Executor
 Executor is a latency and fault tolerance library. Designed to manage and isolate access points of remote systems, services and libraries can stop cascading failure and increase performance. Executor implements [Circuit Breaker](http://martinfowler.com/bliki/CircuitBreaker.html) pattern with several useful improvements. 
 
 ## Current release
-25/09/2014 rabbit-executor **1.1.0** released! Should appear in maven central shortly.
+29/09/2014 rabbit-executor **1.1.1** released! Should appear in maven central shortly.
 
 ## Download and install
 ```
 <dependency>
   <groupId>com.watchrabbit</groupId>
   <artifactId>rabbit-executor</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
@@ -94,6 +94,25 @@ Errors processing depends on execution method. Method `invoke` throws `Execution
 Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode`.
 
 ## Request cache
+Executor supports callback results cacheing. To enable this feature configure cache via `withCache` method. 
+```java
+public class Foo {
+
+    public void bar() throws ExecutionException {
+        V returnedValue = executor("foo-system")
+                .withCache(
+                        cache("cacheName", "key")
+                )
+                .invoke(()
+                        -> // do something in foo-system
+                            ...
+                );
+    }
+}
+
+```
+Method `cache` takes cache name and key. Cache name should be unique for each command. Key is used to store returned value in cache. Method `withCacheSize` in cache builder configures size of cache map,  and `withExpireTime` method sets timeout - when this timeout elapses result should be removed from cache.
+
 ## Request retries
 
 ## Request batching - todo
