@@ -15,7 +15,7 @@ Executor is a latency and fault tolerance library. Designed to manage and isolat
 <dependency>
   <groupId>com.watchrabbit</groupId>
   <artifactId>rabbit-executor</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
