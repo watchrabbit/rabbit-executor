@@ -32,7 +32,7 @@ public class CacheTest {
     public void shoudlInvokeOnlyOnce() {
         CountDownLatch latch = new CountDownLatch(2);
 
-        String invoke = ExecutorCommand.<String>executor("")
+        String invoke = ExecutorCommand.<String>executor("shoudlInvokeOnlyOnce")
                 .withCache(
                         cache("name", "key")
                 ).silentFailMode()
@@ -42,7 +42,7 @@ public class CacheTest {
                             return "abc";
                         }
                 );
-        String secondInvoke = executor("")
+        String secondInvoke = executor("shoudlInvokeOnlyOnce")
                 .withCache(
                         cache("name", "key")
                 ).silentFailMode()
@@ -61,7 +61,7 @@ public class CacheTest {
     public void shoudlInvokeTwiceOnDiffrentKeys() {
         CountDownLatch latch = new CountDownLatch(2);
 
-        String invoke = ExecutorCommand.<String>executor("")
+        String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwiceOnDiffrentKeys")
                 .withCache(
                         cache("secondName", "key")
                 ).silentFailMode()
@@ -71,7 +71,7 @@ public class CacheTest {
                             return "abc";
                         }
                 );
-        String secondInvoke = executor("")
+        String secondInvoke = executor("shoudlInvokeTwiceOnDiffrentKeys")
                 .withCache(
                         cache("secondName", "key2")
                 ).silentFailMode()
@@ -89,7 +89,7 @@ public class CacheTest {
     @Test
     public void shoudlInvokeTwiceBecauseTimeouted() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
-        String invoke = ExecutorCommand.<String>executor("")
+        String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwiceBecauseTimeouted")
                 .withCache(
                         cache("cache3", "key")
                         .withCacheSize(1)
@@ -102,7 +102,7 @@ public class CacheTest {
                         }
                 );
         latch.await(1, TimeUnit.SECONDS);
-        String secondInvoke = ExecutorCommand.<String>executor("")
+        String secondInvoke = ExecutorCommand.<String>executor("shoudlInvokeTwiceBecauseTimeouted")
                 .withCache(
                         cache("cache3", "key")
                         .withCacheSize(1)
@@ -123,7 +123,7 @@ public class CacheTest {
     public void shoudlInvokeTwiceOnDiffrentCaches() {
         CountDownLatch latch = new CountDownLatch(2);
 
-        String invoke = ExecutorCommand.<String>executor("")
+        String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwiceBecauseTimeouted")
                 .withCache(
                         cache("cache1", "key")
                 ).silentFailMode()
