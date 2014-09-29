@@ -34,6 +34,7 @@ public class RetryTest {
         CountDownLatch latch = new CountDownLatch(2);
 
         String invoke = ExecutorCommand.<String>executor("")
+                .withBreakerRetryTimeout(-1, TimeUnit.MILLISECONDS)
                 .withRetry(
                         retry()
                         .withRetryInterval(10, TimeUnit.MILLISECONDS)
