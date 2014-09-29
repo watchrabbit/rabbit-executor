@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class RetryTest {
 
-    @Test(timeout = 200)
+    @Test(timeout = 500)
     public void shoudlInvokeTwice() throws ExecutionException {
         CountDownLatch latch = new CountDownLatch(2);
 
