@@ -85,7 +85,7 @@ Usage
 Each one of Executor features provides few customization options and introduces some default values.
 
 ## Circuit breaker
-Circuit breakers are created by `circuitName` provided in executor creation. When a executor with `foo` circuit name opens each other executor with name `foo` opens. Open circuit skips command execution and throws `CircuitOpenException`. When `breakerRetryTimeout` elapses breaker closes circuit. Default value of `breakerRetryTimeout` is 1000 miliseconds.
+Circuit breakers are created by `circuitName` provided in executor creation. When a executor with `foo` circuit name opens each other executor with name `foo` opens. Open circuit skips command execution and throws `CircuitOpenException`. When `breakerRetryTimeout` elapses breaker closes circuit. Value `-1` disables this feature. Default value of `breakerRetryTimeout` is 1000 miliseconds.
 
 ## Errors
 Errors processing depends on execution method. Method `invoke` throws `ExecutionException` wrapping exception thrown by command. Method `queue` throws exception thrown by command wrapped in `ExecutionException` when `get` method is called on returned `Future<V>`. Finally, `observe` method with `onSuccess` callback suppress exception, and in variant with error callback passes exception to `onFailure` method.
