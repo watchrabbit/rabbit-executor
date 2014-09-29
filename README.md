@@ -8,14 +8,14 @@ Watchrabbit - Executor
 Executor is a latency and fault tolerance library. Designed to manage and isolate access points of remote systems, services and libraries can stop cascading failure and increase performance. Executor implements [Circuit Breaker](http://martinfowler.com/bliki/CircuitBreaker.html) pattern with several useful improvements. 
 
 ## Current release
-29/09/2014 rabbit-executor **1.1.1** released! Should appear in maven central shortly.
+29/09/2014 rabbit-executor **1.1.2** released! Should appear in maven central shortly.
 
 ## Download and install
 ```
 <dependency>
   <groupId>com.watchrabbit</groupId>
   <artifactId>rabbit-executor</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 </dependency>
 ```
 
