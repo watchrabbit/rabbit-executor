@@ -94,7 +94,7 @@ Errors processing depends on execution method. Method `invoke` throws `Execution
 Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode`.
 
 ## Request cache
-Executor supports callback results cacheing. To enable this feature configure cache via `withCache` method. 
+Executor supports callback results caching. To enable this feature configure cache via `withCache` method. 
 ```java
 public class Foo {
 
