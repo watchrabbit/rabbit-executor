@@ -113,7 +113,25 @@ public class Foo {
 ```
 Method `cache` takes cache name and key. Cache name should be unique for each command. Key is used to store returned value in cache. Method `withCacheSize` in cache builder configures size of cache map,  and `withExpireTime` method sets timeout - when this timeout elapses result should be removed from cache.
 
-## Request retries
+## Retry mode
+Retry mode automatically tries to execute failed callback again after specified time elapses. To enable retry and configure callback use: 
+```java
+public class Foo {
+
+    public void bar() throws ExecutionException {
+        V returnedValue = executor("foo-system")
+                .withRetry(
+                        retry()
+                        .withRetryInterval(10, TimeUnit.SECONDS)
+                )
+                .invoke(()
+                        -> // do something in foo-system
+                            ...
+                );
+    }
+}
+
+```
 
 ## Request batching - todo
 
