@@ -23,7 +23,7 @@ public class CommandConfig {
 
     private String commandName = "";
 
-    private long breakerRetryTimeout = 1000;
+    private long breakerRetryTimeout = 100;
 
     private CacheConfig cacheConfig;
 

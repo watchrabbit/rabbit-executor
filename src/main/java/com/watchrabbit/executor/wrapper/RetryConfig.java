@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RetryConfig {
 
-    private long retryInterval = 100;
+    private long retryInterval = 200;
 
     private RetryConfig() {
     }
