@@ -11,6 +11,7 @@
     <url>https://github.com/watchrabbit/rabbit-executor</url>
     <modules>
         <module>rabbit-executor</module>
+        <module>rabbit-executor-spring</module>
     </modules>
     
     <licenses>
