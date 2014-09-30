@@ -22,11 +22,11 @@ Executor is a latency and fault tolerance library. Designed to manage and isolat
 Executions
 ----------
 
-Executor supports three diffrent types of command execution: synchronous, asynchronous and callback. Each one supports each feature described in usage section, such as circuit-breaker, thread pooling or cacheing.
+Executor supports three different types of command execution: synchronous, asynchronous and callback. Each one supports each feature described in usage section, such as circuit-breaker, thread pooling or caching.
 
 ## Synchronous 
 
-To invoke some command synchronously write:
+To invoke some command synchronously use:
 ```java
 public class Foo {
 
@@ -44,7 +44,7 @@ public class Foo {
 
 
 ## Asynchronous
-To execute some command asynchronously instead of `invoke` use `queue`.
+To execute some command asynchronously instead of `invoke()` use `queue()`.
 ```java
 public class Foo {
 
@@ -57,10 +57,10 @@ public class Foo {
     }
 }
 ```
-Invoke methods immediately returns with `Feature`, and executes callback asynchronously.
+`queue()` methods immediately returns with `Feature`, and executes callback asynchronously.
 
 ## Callback
-Executor supports also callback mode. To run callback in this mode use `observe`, with successCallback as required parameter and errorCallback as optional parameter. 
+Executor supports also callback mode. To run callback in this mode use `observe()`, with successCallback as required parameter and errorCallback as optional parameter. 
 ```java
 public class Foo {
 
@@ -88,13 +88,13 @@ Each one of Executor features provides few customization options and introduces 
 Circuit breakers are created by `circuitName` provided in executor creation. When a executor with `foo` circuit name opens each other executor with name `foo` opens. Open circuit skips command execution and throws `CircuitOpenException`. When `breakerRetryTimeout` elapses breaker closes circuit. Value `-1` disables this feature. Default value of `breakerRetryTimeout` is 100 miliseconds.
 
 ## Errors
-Errors processing depends on execution method. Method `invoke` throws `ExecutionException` wrapping exception thrown by command. Method `queue` throws exception thrown by command wrapped in `ExecutionException` when `get` method is called on returned `Future<V>`. Finally, `observe` method with `onSuccess` callback suppress exception, and in variant with error callback passes exception to `onFailure` method.
+Errors processing depends on execution method. Method `invoke()` throws `ExecutionException` wrapping exception thrown by command. Method `queue()` throws exception thrown by command wrapped in `ExecutionException` when `get()` method is called on returned `Future<V>`. Finally, `observe()` method with `onSuccess()` callback suppress exception, and in variant with error callback passes exception to `onFailure()` method.
 
 ## Fail silent
-Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode`.
+Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode()`.
 
 ## Request cache
-Executor supports callback results caching. To enable this feature configure cache via `withCache` method. 
+Executor supports callback results caching. To enable this feature configure cache via `withCache()` method. 
 ```java
 public class Foo {
 
@@ -111,7 +111,7 @@ public class Foo {
 }
 
 ```
-Method `cache` takes cache name and key. Cache name should be unique for each command. Key is used to store returned value in cache. Method `withCacheSize` in cache builder configures size of cache map,  and `withExpireTime` method sets timeout - when this timeout elapses result should be removed from cache.
+Method `cache()` takes cache name and key. Cache name should be unique for each command. Key is used to store returned value in cache. Method `withCacheSize()` in cache builder configures size of cache map,  and `withExpireTime()` method sets timeout - when this timeout elapses result should be removed from cache.
 
 ## Retry mode
 Retry mode automatically tries to execute failed callback again after specified time elapses. To enable retry and configure callback use: 
