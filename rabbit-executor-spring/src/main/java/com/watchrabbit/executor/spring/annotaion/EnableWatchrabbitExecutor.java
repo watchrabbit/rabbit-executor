@@ -1,5 +1,6 @@
-package com.watchrabbit.executor.spring;
+package com.watchrabbit.executor.spring.annotaion;
 
+import com.watchrabbit.executor.spring.WatchrabbitExecutorConfiguration;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
