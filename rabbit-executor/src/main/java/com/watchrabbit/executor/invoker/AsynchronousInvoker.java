@@ -23,9 +23,8 @@ import java.util.concurrent.Future;
  *
  * @author Mariusz
  */
-public class AsynchronousInvoker implements Invoker {
+public class AsynchronousInvoker {
 
-    @Override
     public <V> Future<V> invoke(ExecutorService pool, Callable<V> callable) {
         return pool.submit(callable);
     }

@@ -46,7 +46,7 @@ public class CommandServiceImpl implements CommandService {
     }
 
     @Override
-    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfig command) {
+    public <V> V executeSynchronously(Callable<V> callable, CommandConfig command) throws Exception {
         ExecutorService pool = poolManager.getPool();
         Callable<V> wrapped = wrapp(callable, pool, command);
         return new SynchronousInvoker().invoke(pool, wrapped);

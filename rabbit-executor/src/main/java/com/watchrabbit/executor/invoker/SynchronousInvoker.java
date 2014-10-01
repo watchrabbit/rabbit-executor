@@ -15,25 +15,17 @@
  */
 package com.watchrabbit.executor.invoker;
 
-import com.watchrabbit.executor.wrapper.CompletedFuture;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  *
  * @author Mariusz
  */
-public class SynchronousInvoker implements Invoker {
+public class SynchronousInvoker   {
 
-    @Override
-    public <V> Future<V> invoke(ExecutorService pool, Callable<V> callable) {
-        try {
-            V value = callable.call();
-            return new CompletedFuture<>(value);
-        } catch (Exception ex) {
-            return new CompletedFuture<>(ex);
-        }
+    public <V> V invoke(ExecutorService pool, Callable<V> callable) throws Exception {
+        return callable.call();
 
     }
 

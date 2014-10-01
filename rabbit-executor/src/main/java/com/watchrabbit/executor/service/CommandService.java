@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
  */
 public interface CommandService {
 
-    public <V> Future<V> executeSynchronously(Callable<V> callable, CommandConfig commandWrapper);
+    public <V> V executeSynchronously(Callable<V> callable, CommandConfig commandWrapper) throws Exception;
 
     public <V> Future<V> executeAsynchronously(Callable<V> callable, CommandConfig commandWrapper);
 

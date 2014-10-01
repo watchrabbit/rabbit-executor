@@ -16,7 +16,6 @@
 package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.callback.CheckedConsumer;
-import com.watchrabbit.commons.exception.SystemException;
 import com.watchrabbit.executor.service.CommandService;
 import com.watchrabbit.executor.service.CommandServiceImpl;
 import com.watchrabbit.executor.wrapper.CacheConfig;
@@ -24,7 +23,6 @@ import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import com.watchrabbit.executor.wrapper.CommandConfig;
 import com.watchrabbit.executor.wrapper.RetryConfig;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -87,9 +85,9 @@ public class ExecutorCommand<V> {
      * logic if configured.
      *
      * @param runnable method fired by executor
-     * @throws ExecutionException if runnable throws some exception
+     * @throws Exception if runnable throws some exception
      */
-    public void invoke(CheckedRunnable runnable) throws ExecutionException {
+    public void invoke(CheckedRunnable runnable) throws Exception {
         invoke(()
                 -> {
                     runnable.run();
@@ -104,15 +102,10 @@ public class ExecutorCommand<V> {
      * @param <V> type of value returned by this method
      * @param callable method fired by executor
      * @return {@code V} returns value returned by callable
-     * @throws ExecutionException if runnable throws some exception
+     * @throws Exception if callable throws some exception
      */
-    public <V> V invoke(Callable<V> callable) throws ExecutionException {
-        try {
-            return service.executeSynchronously(callable, config).get();
-        } catch (InterruptedException ex) {
-            LOGGER.error("Shoudl never be thrown!", ex);
-            throw new SystemException("Shoudl never be thrown!", ex);
-        }
+    public <V> V invoke(Callable<V> callable) throws Exception {
+        return service.executeSynchronously(callable, config);
     }
 
     /**

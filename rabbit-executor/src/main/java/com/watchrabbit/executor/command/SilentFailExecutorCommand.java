@@ -18,7 +18,6 @@ package com.watchrabbit.executor.command;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import com.watchrabbit.executor.wrapper.CommandConfig;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
     public <V> V invoke(Callable<V> callable) {
         try {
             return super.invoke(callable);
-        } catch (ExecutionException ex) {
+        } catch (Exception ex) {
             LOGGER.debug("Catched exception, suppressing, returning null", ex);
             return null;
         }
@@ -63,7 +62,7 @@ public class SilentFailExecutorCommand<V> extends ExecutorCommand<V> {
     public void invoke(CheckedRunnable runnable) {
         try {
             super.invoke(runnable);
-        } catch (ExecutionException ex) {
+        } catch (Exception ex) {
             LOGGER.debug("Catched exception, suppressing", ex);
         }
     }

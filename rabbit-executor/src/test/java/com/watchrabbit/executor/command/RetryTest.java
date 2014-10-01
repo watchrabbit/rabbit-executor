@@ -18,7 +18,6 @@ package com.watchrabbit.executor.command;
 import com.watchrabbit.commons.exception.SystemException;
 import static com.watchrabbit.executor.wrapper.RetryConfig.retry;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import org.junit.Test;
 public class RetryTest {
 
     @Test(timeout = 500)
-    public void shoudlInvokeTwice() throws ExecutionException {
+    public void shoudlInvokeTwice() throws Exception {
         CountDownLatch latch = new CountDownLatch(2);
 
         String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwice")
