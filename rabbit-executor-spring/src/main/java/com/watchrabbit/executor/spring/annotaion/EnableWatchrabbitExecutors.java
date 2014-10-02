@@ -16,6 +16,6 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Import(WatchrabbitExecutorConfiguration.class)
 @Documented
-public @interface EnableWatchrabbitExecutor {
+public @interface EnableWatchrabbitExecutors {
 
 }

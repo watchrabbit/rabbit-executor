@@ -1,15 +1,17 @@
 package com.watchrabbit.executor.spring;
 
+import static com.watchrabbit.executor.command.ExecutorCommand.executor;
+import com.watchrabbit.executor.spring.annotaion.Executor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.FixedValue;
+import org.springframework.cglib.proxy.InvocationHandler;
 import org.springframework.core.Ordered;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -26,27 +28,40 @@ public class ExecutorAnnotationBeanPostProcessor implements BeanPostProcessor, O
     @Override
     public Object postProcessAfterInitialization(final Object bean, String beanName) {
         Class<?> targetClass = AopUtils.getTargetClass(bean);
+
+        Map<Method, Executor> annotatedMethods = findAnnotatedMethods(targetClass);
+
+        if (!annotatedMethods.isEmpty()) {
+            return createProxy(targetClass, annotatedMethods, bean).create();
+        }
+        return bean;
+    }
+
+    private Enhancer createProxy(Class<?> targetClass, Map<Method, Executor> annotatedMethods, final Object bean) {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(targetClass);
-        enhancer.setCallback(new FixedValue() {
-            @Override
-            public Object loadObject() throws Exception {
-
-                return "Hello cglib!";
-
+        enhancer.setCallback((InvocationHandler) (Object proxy, Method method, Object[] args) -> {
+            if (annotatedMethods.containsKey(method)) {
+                Executor annotation = annotatedMethods.get(method);
+                return executor(annotation.circuitName())
+                        .withBreakerRetryTimeout(annotation.breakerRetryTimeout(), annotation.timeUnit())
+                        .invoke(() -> method.invoke(bean, args));
+            } else {
+                return method.invoke(bean, args);
             }
         });
-        enhancer.create();
+        return enhancer;
+    }
 
-        ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
-            @Override
-            public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-                for (Scheduled scheduled : AnnotationUtils.getRepeatableAnnotation(method, Schedules.class, Scheduled.class)) {
-//                    processScheduled(scheduled, method, bean);
-                }
+    private Map<Method, Executor> findAnnotatedMethods(Class<?> targetClass) throws IllegalArgumentException {
+        Map<Method, Executor> annotatedMethods = new HashMap<>();
+        ReflectionUtils.doWithMethods(targetClass, (Method method) -> {
+            Executor annotation = AnnotationUtils.getAnnotation(method, Executor.class);
+            if (annotation != null) {
+                annotatedMethods.put(method, annotation);
             }
         });
-        return bean;
+        return annotatedMethods;
     }
 
     @Override
