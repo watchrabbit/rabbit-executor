@@ -31,9 +31,9 @@ import org.junit.Test;
 public class ExecutorCommandTest {
 
     @Test
-    public void shoudlInvokeMethod() {
+    public void shouldInvokeMethod() {
         CountDownLatch latch = new CountDownLatch(1);
-        executor("shoudlInvokeMethod")
+        executor("shouldInvokeMethod")
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
@@ -43,16 +43,16 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlBreakCircut() {
+    public void shouldBreakCircut() {
         CountDownLatch latch = new CountDownLatch(1);
 
-        executor("shoudlBreakCircut")
+        executor("shouldBreakCircut")
                 .silentFailMode()
                 .invoke((CheckedRunnable) () -> {
                     throw new SystemException();
                 });
 
-        executor("shoudlBreakCircut")
+        executor("shouldBreakCircut")
                 .silentFailMode()
                 .invoke(()
                         -> latch.countDown()
@@ -62,17 +62,17 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlBreakCircutAndClose() {
+    public void shouldBreakCircutAndClose() {
         CountDownLatch latch = new CountDownLatch(2);
 
-        executor("shoudlBreakCircutAndClose")
+        executor("shouldBreakCircutAndClose")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke((CheckedRunnable) () -> {
                     throw new SystemException();
                 });
 
-        executor("shoudlBreakCircutAndClose")
+        executor("shouldBreakCircutAndClose")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
@@ -80,7 +80,7 @@ public class ExecutorCommandTest {
                 );
 
         Sleep.untilTrue(() -> true, 200, TimeUnit.MILLISECONDS);
-        executor("shoudlBreakCircutAndClose")
+        executor("shouldBreakCircutAndClose")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
                 .invoke(()
@@ -91,9 +91,9 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlInvokeMethodAsynchronously() throws InterruptedException {
+    public void shouldInvokeMethodAsynchronously() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        executor("shoudlInvokeMethodAsynchronously")
+        executor("shouldInvokeMethodAsynchronously")
                 .queue(()
                         -> latch.countDown()
                 );
@@ -103,9 +103,9 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlCallOnSuccessMethod() throws InterruptedException {
+    public void shouldCallOnSuccessMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2);
-        executor("shoudlCallOnSuccessMethod")
+        executor("shouldCallOnSuccessMethod")
                 .observe(() -> latch.countDown(),
                         () -> latch.countDown()
                 );
@@ -115,9 +115,9 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlCallOnSuccessMethodWithResult() throws InterruptedException {
+    public void shouldCallOnSuccessMethodWithResult() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        executor("shoudlCallOnSuccessMethodWithResult")
+        executor("shouldCallOnSuccessMethodWithResult")
                 .observe(() -> true,
                         (result) -> {
                             if (result) {
@@ -131,9 +131,9 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlCallOnSuccessMethodWithResultAndErrorMethod() throws InterruptedException {
+    public void shouldCallOnSuccessMethodWithResultAndErrorMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        executor("shoudlCallOnSuccessMethodWithResultAndErrorMethod")
+        executor("shouldCallOnSuccessMethodWithResultAndErrorMethod")
                 .observe(() -> true,
                         (result) -> {
                             if (result) {
@@ -149,9 +149,9 @@ public class ExecutorCommandTest {
     }
 
     @Test
-    public void shoudlCallOnErrorMethod() throws InterruptedException {
+    public void shouldCallOnErrorMethod() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        executor("shoudlCallOnErrorMethod")
+        executor("shouldCallOnErrorMethod")
                 .observe((CheckedRunnable) () -> {
                     throw new SystemException("exception");
                 },

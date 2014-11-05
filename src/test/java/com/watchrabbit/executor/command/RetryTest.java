@@ -29,10 +29,10 @@ import org.junit.Test;
 public class RetryTest {
 
     @Test(timeout = 500)
-    public void shoudlInvokeTwice() throws Exception {
+    public void shouldInvokeTwice() throws Exception {
         CountDownLatch latch = new CountDownLatch(2);
 
-        String invoke = ExecutorCommand.<String>executor("shoudlInvokeTwice")
+        String invoke = ExecutorCommand.<String>executor("shouldInvokeTwice")
                 .withBreakerRetryTimeout(-1, TimeUnit.MILLISECONDS)
                 .withRetry(
                         retry()

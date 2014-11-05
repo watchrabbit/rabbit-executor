@@ -18,6 +18,8 @@ package com.watchrabbit.executor.service;
 import com.watchrabbit.executor.exception.CircuitOpenException;
 import com.watchrabbit.executor.wrapper.CircuitBreaker;
 import com.watchrabbit.executor.wrapper.CommandConfig;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
@@ -39,7 +41,7 @@ public class CircuitBreakerServiceImpl implements CircuitBreakerService {
             createCircuitBreaker(commandConfig);
         }
         CircuitBreaker breaker = circuitBreakers.get(commandConfig.getCommandName());
-        return wrap(callable, breaker);
+        return wrap(callable, breaker, commandConfig);
     }
 
     private static synchronized void createCircuitBreaker(CommandConfig commandConfig) {
@@ -50,7 +52,15 @@ public class CircuitBreakerServiceImpl implements CircuitBreakerService {
         }
     }
 
-    private <V> Callable<V> wrap(Callable<V> callable, CircuitBreaker breaker) {
+    private <V> Callable<V> wrap(Callable<V> callable, CircuitBreaker breaker, CommandConfig commandConfig) {
+        List<Class<? extends Exception>> excludedExceptions = commandConfig.getExcludedExceptions();
+        if (excludedExceptions == null) {
+            excludedExceptions = Collections.emptyList();
+        }
+        return wrap(callable, breaker, excludedExceptions);
+    }
+
+    private <V> Callable<V> wrap(Callable<V> callable, CircuitBreaker breaker, List<Class<? extends Exception>> excludedExceptions) {
         return () -> {
             if (!breaker.isClosed()) {
                 LOGGER.debug("Circut is open, skipping command {} execution and throwing exception", breaker.getCommandName());
@@ -60,7 +70,9 @@ public class CircuitBreakerServiceImpl implements CircuitBreakerService {
                 try {
                     return callable.call();
                 } catch (Exception ex) {
-                    breaker.open();
+                    if (!excludedExceptions.contains(ex.getClass())) {
+                        breaker.open();
+                    }
                     throw ex;
                 }
             }
