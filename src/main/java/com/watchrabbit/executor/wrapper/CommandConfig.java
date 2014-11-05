@@ -15,6 +15,8 @@
  */
 package com.watchrabbit.executor.wrapper;
 
+import java.util.List;
+
 /**
  *
  * @author Mariusz
@@ -24,6 +26,8 @@ public class CommandConfig {
     private String commandName = "";
 
     private long breakerRetryTimeout = 100;
+
+    private List<Class<? extends Exception>> excludedExceptions;
 
     private CacheConfig cacheConfig;
 
@@ -43,6 +47,14 @@ public class CommandConfig {
 
     public void setBreakerRetryTimeout(long breakerRetryTimeout) {
         this.breakerRetryTimeout = breakerRetryTimeout;
+    }
+
+    public List<Class<? extends Exception>> getExcludedExceptions() {
+        return excludedExceptions;
+    }
+
+    public void setExcludedExceptions(List<Class<? extends Exception>> excludedExceptions) {
+        this.excludedExceptions = excludedExceptions;
     }
 
     public CacheConfig getCacheConfig() {

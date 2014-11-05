@@ -22,6 +22,7 @@ import com.watchrabbit.executor.wrapper.CacheConfig;
 import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import com.watchrabbit.executor.wrapper.CommandConfig;
 import com.watchrabbit.executor.wrapper.RetryConfig;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +78,19 @@ public class ExecutorCommand<V> {
      */
     public ExecutorCommand<V> withBreakerRetryTimeout(long breakerRetryTimeout, TimeUnit breakerRetryTimeUnit) {
         config.setBreakerRetryTimeout(breakerRetryTimeUnit.toMillis(breakerRetryTimeout));
+        return this;
+    }
+
+    /**
+     * If wrapped method throws one of passed exceptions breaker will pass it
+     * without opening connection.
+     *
+     * @param excludedExceptions exceptions that should not open breaker
+     * @return {@code ExecutorCommand<V>} executor with configured
+     * excludedExceptions
+     */
+    public ExecutorCommand<V> withExcludedExceptions(List<Class<? extends Exception>> excludedExceptions) {
+        config.setExcludedExceptions(excludedExceptions);
         return this;
     }
 
