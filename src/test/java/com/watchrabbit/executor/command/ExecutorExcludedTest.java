@@ -2,6 +2,7 @@ package com.watchrabbit.executor.command;
 
 import com.watchrabbit.commons.exception.SystemException;
 import static com.watchrabbit.executor.command.ExecutorCommand.executor;
+import com.watchrabbit.executor.wrapper.CheckedRunnable;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +20,7 @@ public class ExecutorExcludedTest {
         SilentFailExecutorCommand<Object> command = executor("shouldIgnoreException")
                 .withExcludedExceptions(Arrays.asList(SystemException.class))
                 .silentFailMode();
-        command.invoke(()
+        command.invoke((CheckedRunnable) ()
                 -> {
                     throw new SystemException();
                 });
