@@ -79,7 +79,7 @@ public class ExecutorCommandTest {
                         -> latch.countDown()
                 );
 
-        Sleep.untilTrue(() -> true, 200, TimeUnit.MILLISECONDS);
+        Sleep.untilTrue(() -> true, 250, TimeUnit.MILLISECONDS);
         executor("shouldBreakCircutAndClose")
                 .withBreakerRetryTimeout(200, TimeUnit.MILLISECONDS)
                 .silentFailMode()
