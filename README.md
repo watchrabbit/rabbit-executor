@@ -8,14 +8,14 @@ Watchrabbit - Executor
 Executor is a latency and fault tolerance library. Designed to manage and isolate access points of remote systems, services and libraries can stop cascading failure and increase performance. Executor implements [Circuit Breaker](http://martinfowler.com/bliki/CircuitBreaker.html) pattern with several useful improvements. 
 
 ## Current release
-2/10/2014 rabbit-executor **1.1.4** released! Should appear in maven central shortly.
+07/11/2014 rabbit-executor **1.1.5** released! Should appear in maven central shortly.
 
 ## Download and install
 ```
 <dependency>
   <groupId>com.watchrabbit</groupId>
   <artifactId>rabbit-executor</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
 </dependency>
 ```
 
@@ -89,6 +89,9 @@ Circuit breakers are created by `circuitName` provided in executor creation. Whe
 
 ## Errors
 Errors processing depends on execution method. Method `invoke()` throws `Exception` thrown by command. Method `queue()` throws exception thrown by command wrapped in `ExecutionException` when `get()` method is called on returned `Future<V>`. Finally, `observe()` method with `onSuccess()` callback suppress exception, and in variant with error callback passes exception to `onFailure()` method.
+
+## Excluded Exceptions
+`WithExcludedExceptions` method defines exceptions that doesn't open circuit if thrown. By default list of excluded exceptions is empty.
 
 ## Fail silent
 Fail silent mode suppress exceptions thrown by invoke method. To enable silent mode just before invoke method use `silentFailMode()`.
